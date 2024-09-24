@@ -1,0 +1,5 @@
+build
+dist
+log_restart_*
+objetivos.txt
+ReiniciaApi.spec
