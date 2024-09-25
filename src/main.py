@@ -1,4 +1,3 @@
-from dotenv import load_dotenv
 import os
 import schedule as a
 from time import sleep
@@ -7,13 +6,14 @@ from utils.logger import cria_logtxt
 from utils.error_handler import log_error
 from requests import get
 from os import path
+from sys import executable
+from dotenv import load_dotenv
 
 load_dotenv()
-
 class RestartService:
     def __init__(self):
-        self.username_service = os.getenv("SERVICE_USERNAME", "default_username")
-        self.password_service = os.getenv("SERVICE_PASSWORD", "default_password")
+        self.username_service = os.getenv("SERVICE_USERNAME")
+        self.password_service = os.getenv("SERVICE_PASSWORD")
         self.manager = ServiceManager(self.username_service, self.password_service)
         self.make_requests_running = False
         self.is_updating = False
@@ -38,11 +38,11 @@ class RestartService:
             self.make_requests_running = False
 
     def main(self):
-        a.every(0.30).minutes.do(self.make_requests)
+        a.every(2).minutes.do(self.make_requests)
         cria_logtxt("Agendamento da tarefa de checar as API's a cada 2 minutos feito.")
-        a.every().day.at("13:58").do(lambda: self.manager.restart_services('restart_services'))
+        a.every().day.at("22:00").do(lambda: self.manager.restart_services('restart_services'))
         cria_logtxt("Agendamento da tarefa de reiniciar as API's diariamente às 22:00 horas feito.")
-        way_to_text_file = path.join(path.abspath(path.join(path.dirname(__file__), '..')), 'atualizacao_web.txt')
+        way_to_text_file = path.join(path.abspath(path.join(path.dirname(executable), '..')), 'atualizacao_web.txt')
         while True:
             self.is_updating = 'true' in open(way_to_text_file, 'r').readlines()
             a.run_pending()

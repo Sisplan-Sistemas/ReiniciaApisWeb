@@ -1,0 +1,4 @@
+para gerar versao essa linha:
+way_to_text_file = path.join(path.abspath(path.join(path.dirname(executable), '..')), 'atualizacao_web.txt')
+tem que estar como executable, porém se estiver em debug no lugar de executable vai "__file__"
+pq em debug tem que ir aonde o script está e quando gera um executavel o script fica no snapchot do windows então ao executar o executavel pega uma pasta nada a ver
