@@ -3,3 +3,5 @@ dist
 log_restart_*
 objetivos.txt
 ReiniciaApi.spec
+.env
+backup
