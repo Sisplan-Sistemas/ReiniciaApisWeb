@@ -12,8 +12,8 @@ def restart_single_service(service_name, service_manager, username_service, pass
             sleep(10)
             cria_logtxt(f'Serviço {service_name} parado com sucesso.')
 
-        wsu.ChangeServiceConfig(
-            service_name,
+        w.ChangeServiceConfig(
+            s_open,
             w.SERVICE_NO_CHANGE,
             w.SERVICE_NO_CHANGE,
             w.SERVICE_NO_CHANGE,

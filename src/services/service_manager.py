@@ -25,13 +25,23 @@ class ServiceManager:
         finally:
             w.CloseServiceHandle(service_manager)
 
-    def restart_services(self):
-        cria_logtxt("Iniciando rotina diária para reiniciar as API's web")
+    def restart_services(self, function: str, list_unresponsive_apis = []):
+        if function == 'make_requests':
+            cria_logtxt("Verificado que existem API's sem comunicar, reiniciando...")
+        else:
+            cria_logtxt("Iniciando rotina diária para reiniciar as API's web")
         service_manager = w.OpenSCManager(None, None, w.SC_MANAGER_ALL_ACCESS)
         try:
-            for service in self.services_api_web:
-                restart_single_service(service, service_manager, self.username_service, self.password_service)
-            cria_logtxt("Rotina de reiniciar as API's diariamente completa")
+            if list_unresponsive_apis:
+                for service in list_unresponsive_apis:
+                    restart_single_service(service, service_manager, self.username_service, self.password_service)
+            else:
+                for service in self.services_api_web:
+                    restart_single_service(service, service_manager, self.username_service, self.password_service)
+            if function == 'make_requests':
+                cria_logtxt("Rotina de reiniciar as API's que estavam sem comunicar completa")
+            else:    
+                cria_logtxt("Rotina de reiniciar as API's diariamente completa")
         finally:
             w.CloseServiceHandle(service_manager)
 
