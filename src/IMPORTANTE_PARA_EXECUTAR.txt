@@ -1,4 +1,3 @@
-para gerar versao essa linha:
-way_to_text_file = path.join(path.abspath(path.join(path.dirname(executable), '..')), 'atualizacao_web.txt')
-tem que estar como executable, porém se estiver em debug no lugar de executable vai "__file__"
-pq em debug tem que ir aonde o script está e quando gera um executavel o script fica no snapchot do windows então ao executar o executavel pega uma pasta nada a ver
+Para gerar versão é necessário substituir tudo onde tiver "__file__" importado de dentro da biblioteca sys para "executable", se não, quando abrir o executável ele vai buscar a pasta
+de snapchot do windows como caminho e vai errar o local onde está de fato e não vai conseguir buscar os arquivos, essas varíaveis existem dentro de main.py e de api_service.py, e quando for debugar
+é necessário trocar pra __file__ pra ele pegar a pasta onde está o script como se fosse o executável, dúvidas falar com Bruno do desenvolvimento web. 26/09/2024

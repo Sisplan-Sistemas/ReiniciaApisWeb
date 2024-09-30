@@ -7,3 +7,7 @@ ReiniciaApi.spec
 backup
 main.spec
 atualizacao_web.txt
+nssm.exe
+log_apiWeb
+apiWeb.*
+empresa.txt
