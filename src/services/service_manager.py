@@ -39,6 +39,7 @@ class ServiceManager:
             cria_log_txt("Verificado que existem API's sem comunicar, reiniciando...")
         else:
             cria_log_txt("Iniciando rotina diária para reiniciar as API's web")
+            run(send_message_to_telegram(f"Iniciado rotina diária de reiniciar as API's web."))
         try:
             if list_unresponsive_apis:
                 for service in list_unresponsive_apis:
@@ -50,10 +51,10 @@ class ServiceManager:
                 cria_log_txt("Rotina de reiniciar as API's que estavam sem comunicar completa")
             else:    
                 cria_log_txt("Rotina de reiniciar as API's diariamente completa")
+                run(send_message_to_telegram(f"Finalizado rotina diária de reiniciar as API's web no cliente *{self.emp_name.upper()}*"))
         finally:
             if not is_updating:
                 self.test_services()
-                run(send_message_to_telegram(f'Rotina de reinstalar os serviços no cliente *{self.emp_name.upper()}* completa'))
 
     def check_nginx_and_start(self, sv_manager):
         if self.service_nginx:
@@ -81,4 +82,4 @@ class ServiceManager:
         finally:
             if len(list_unresponsive_services) > 0:
                 send_message_to_sispemail(list_unresponsive_services)
-                run(send_message_to_telegram(f"Existem serviços que não passaram no teste de serviços após a rotina de reinstalar no cliente *{self.emp_name.upper()}*\\nPor favor, verifique\\nServiços: {', '.join(list_unresponsive_services)}"))
+                run(send_message_to_telegram(f"Existem serviços que não passaram no teste de serviços após a rotina de reinstalar no cliente *{self.emp_name.upper()}*\nPor favor, verifique\nServiços: {', '.join(list_unresponsive_services)}"))

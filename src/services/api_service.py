@@ -13,9 +13,9 @@ def restart_single_service(service_name, username_service, password_service):
     try:
         emp_name = getenv("EMP_NAME")
         status_service = wsu.QueryServiceStatus(service_name)
-        nssm_path = path.join(path.abspath(path.join(path.dirname(__file__), '..')), 'nssm.exe')
-        apiweb_path = path.join(path.abspath(path.join(path.dirname(__file__), '..')), 'apiWeb.exe')
-        apiweb_args = '/service'
+        nssm_path = path.join(path.abspath(path.join(path.dirname(executable), '..')), 'nssm.exe')
+        apiweb_path = path.join(path.abspath(path.join(path.dirname(executable), '..')), 'apiWeb.exe')
+        apiweb_args = '/service ' + service_name.replace('Sisplan_Api_Web_', '')
         if status_service[1] == w.SERVICE_RUNNING:
             wsu.StopService(service_name)
             sleep(10)
@@ -26,6 +26,33 @@ def restart_single_service(service_name, username_service, password_service):
         install_command = [nssm_path, 'install', service_name, apiweb_path, apiweb_args]
         run_sb(install_command, check=True)
         sleep(3)
+        try:
+            sc = w.OpenSCManager(None, None, w.SC_MANAGER_ALL_ACCESS)
+            s = w.OpenService(sc, service_name, w.SERVICE_CHANGE_CONFIG)
+            w.ChangeServiceConfig(
+                s,
+                w.SERVICE_NO_CHANGE,
+                w.SERVICE_NO_CHANGE,
+                w.SERVICE_NO_CHANGE,
+                None,
+                None,
+                False,
+                None,
+                username_service,
+                password_service,
+                None,
+            )
+            w.ChangeServiceConfig2(
+                s,
+                w.SERVICE_CONFIG_DELAYED_AUTO_START_INFO,
+                True
+            )
+        except Exception as e:
+            log_error(e, 'Não foi possível informar usuário e senha, nem configurar o tipo de ínicio do serviço. Por favor, verifique!')
+            send_message_to_telegram(f'⚠ Atenção ⚠\\nNão foi possível configurar usuário e senha do serviço: {service_name}\\nPor favor, verifique')
+        finally:
+            w.CloseServiceHandle(sc)
+            w.CloseServiceHandle(s)
         for attempt in range(1, 4):
             status_new_service = wsu.QueryServiceStatus(service_name)
             if status_new_service[1] == w.SERVICE_RUNNING:

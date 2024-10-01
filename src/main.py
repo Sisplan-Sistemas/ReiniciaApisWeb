@@ -10,7 +10,6 @@ from sys import executable
 from dotenv import load_dotenv
 from asyncio import run
 
-
 load_dotenv()
 class RestartService:
     def __init__(self):
@@ -49,11 +48,11 @@ class RestartService:
             run(send_message_to_telegram(f"Rotina de fazer requisições concluída no cliente *{self.emp_name.upper()}*"))
 
     def main(self):
-        a.every(0.10).minutes.do(self.make_requests)
+        a.every(2).minutes.do(self.make_requests)
         cria_log_txt("Agendamento da tarefa de checar as API's a cada 2 minutos feito.")
         a.every().day.at("22:00").do(lambda: self.manager.restart_services('restart_services'))
         cria_log_txt("Agendamento da tarefa de reiniciar as API's diariamente às 22:00 horas feito.")
-        way_to_text_file = path.join(path.abspath(path.join(path.dirname(__file__), '..')), 'atualizacao_web.txt')
+        way_to_text_file = path.join(path.abspath(path.join(path.dirname(executable), '..')), 'atualizacao_web.txt')
         while True:
             self.is_updating = 'true' in open(way_to_text_file, 'r').readlines()
             a.run_pending()
